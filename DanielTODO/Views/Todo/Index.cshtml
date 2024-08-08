@@ -1,4 +1,4 @@
-﻿@model List<DanielTODO.Models.Tarea>
+﻿@model DanielTODO.Models.TareasViewModel
 @{
     ViewData["Title"] = "Todo List";
 }
@@ -9,29 +9,100 @@
     <form asp-action="AñadirTarea" method="post" class="form-inline mb-4">
         <div class="form-group mx-sm-3 mb-2">
             <label for="titulo" class="sr-only">Nueva Tarea</label>
-            <input type="text" name="titulo" class="form-control" id="titulo" placeholder="New Item" required>
+            <input type="text" name="titulo" class="form-control" id="titulo" placeholder="Nueva Tarea" required>
+
+            <button type="submit" class="btn btn-primary mb-2">Añadir</button>
         </div>
-        <button type="submit" class="btn btn-primary mb-2">Add</button>
     </form>
 
-    <ul class="list-group">
-        @foreach (var tarea in Model)
+    <!-- Tareas Incompletas -->
+    <h3>Tareas NO completadas</h3>
+    <ul class="list-group mb-4">
+        @foreach (var tarea in Model.TareasIncompletas)
         {
-            <li class="list-group-item d-flex justify-content-between align-items-center @(tarea.EstaEcho ? "list-group-item-success" : "")">
-                @tarea.Titulo
-                <div>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="form-check">
                     <form asp-action="AlternarTarea" method="post" style="display:inline;">
                         <input type="hidden" name="id" value="@tarea.Id" />
-                        <button type="submit" class="btn btn-sm @(tarea.EstaEcho ? "btn-warning" : "btn-success")">
-                            @(tarea.EstaEcho ? "Undo" : "Complete")
-                        </button>
+                        <input type="checkbox" class="form-check-input" onchange="this.form.submit();" />
                     </form>
+                    <label class="form-check-label">
+                        @tarea.Titulo
+                    </label>
+                </div>
+                <div>
+                    <button class="btn btn-warning btn-sm" onclick="showEditForm(@tarea.Id, '@tarea.Titulo')">Editar</button>
                     <form asp-action="EliminarTarea" method="post" style="display:inline;">
                         <input type="hidden" name="id" value="@tarea.Id" />
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                     </form>
                 </div>
             </li>
         }
     </ul>
+
+    <!-- Tareas Completadas -->
+    <h3>Tareas completadas </h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Tareas</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tarea in Model.TareasCompletadas)
+            {
+                <tr>
+                    <td>@tarea.Titulo</td>
+                    <td>
+                        <form asp-action="AlternarTarea" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@tarea.Id" />
+                            <input type="checkbox" class="form-check-input" checked onchange="this.form.submit();" />
+                        </form>
+                        <button class="btn btn-warning btn-sm" onclick="showEditForm(@tarea.Id, '@tarea.Titulo')">Editar</button>
+                        <form asp-action="EliminarTarea" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@tarea.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
+
+<!-- Modal para editar tarea -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-action="EditarTarea" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Editar Tarea</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="editTaskId" />
+                    <div class="form-group">
+                        <label for="editTaskTitle">Titulo de la tarea</label>
+                        <input type="text" class="form-control" id="editTaskTitle" name="nuevoTitulo" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showEditForm(id, titulo) {
+        document.getElementById('editTaskId').value = id;
+        document.getElementById('editTaskTitle').value = titulo;
+        $('#editModal').modal('show');
+    }
+</script>

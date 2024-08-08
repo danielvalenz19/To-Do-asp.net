@@ -28,3 +28,4 @@ C:\Repositorios\C#\DanielTODO\DanielTODO\obj\Debug\net6.0\refint\DanielTODO.dll
 C:\Repositorios\C#\DanielTODO\DanielTODO\obj\Debug\net6.0\DanielTODO.pdb
 C:\Repositorios\C#\DanielTODO\DanielTODO\obj\Debug\net6.0\DanielTODO.genruntimeconfig.cache
 C:\Repositorios\C#\DanielTODO\DanielTODO\obj\Debug\net6.0\ref\DanielTODO.dll
+C:\Repositorios\C#\DanielTODO\DanielTODO\obj\Debug\net6.0\DanielTODO.sourcelink.json

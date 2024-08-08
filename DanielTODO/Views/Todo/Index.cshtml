@@ -1,0 +1,37 @@
+﻿@model List<DanielTODO.Models.Tarea>
+@{
+    ViewData["Title"] = "Todo List";
+}
+
+<div class="container">
+    <h1 class="my-4">Todo List</h1>
+
+    <form asp-action="AñadirTarea" method="post" class="form-inline mb-4">
+        <div class="form-group mx-sm-3 mb-2">
+            <label for="titulo" class="sr-only">Nueva Tarea</label>
+            <input type="text" name="titulo" class="form-control" id="titulo" placeholder="New Item" required>
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Add</button>
+    </form>
+
+    <ul class="list-group">
+        @foreach (var tarea in Model)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center @(tarea.EstaEcho ? "list-group-item-success" : "")">
+                @tarea.Titulo
+                <div>
+                    <form asp-action="AlternarTarea" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@tarea.Id" />
+                        <button type="submit" class="btn btn-sm @(tarea.EstaEcho ? "btn-warning" : "btn-success")">
+                            @(tarea.EstaEcho ? "Undo" : "Complete")
+                        </button>
+                    </form>
+                    <form asp-action="EliminarTarea" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@tarea.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
